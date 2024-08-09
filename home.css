@@ -1,0 +1,122 @@
+/* styles.css */
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-image: url('https://images.pexels.com/photos/3729557/pexels-photo-3729557.jpeg?auto=compress&cs=tinysrgb&w=600');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+.header-container {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    background-color: #fff;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000; /* Make sure it is above other content */
+}
+
+.header-message {
+    font-size: 14px;
+}
+
+.ch1 {
+    color: cyan;
+    text-align: center;
+    margin-top: 20px;
+}
+
+form {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+label {
+    color: white; /* Set this to the desired color */
+    font-size: 16px; /* Optional: Adjust the font size if needed */
+}
+
+input[type="text"] {
+    margin: 10px;
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+footer {
+    color: greenyellow;
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+#chartContainer {
+    display: flex;
+    align-items: center; /* Center vertically */
+    justify-content: center; /* Center horizontally */
+    gap: 10px; /* Space between graph and button */
+}
+
+#myChart {
+    width: 700px;
+    height: 500px;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+#downloadBtn {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#downloadBtn:hover {
+    background-color: #0056b3;
+}
+
+.contact-button {
+    display: inline-block;
+    margin-left: 10px;
+    padding: 5px 10px;
+    color: #fff;
+    background-color: #007bff;
+    text-decoration: none;
+    border-radius: 3px;
+}
+
+.contact-button:hover {
+    background-color: #0056b3;
+}

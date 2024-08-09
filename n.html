@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graph Plotter</title>
+    <link rel="stylesheet" href="style.css"> <!-- Link to the external CSS file -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</head>
+
+<header class="d-flex justify-content-center py-3">
+    <ul class="nav nav-pills">
+      <li class="nav-item"><a href="n.html" class="nav-link active" aria-current="page">Home</a></li>
+      <li class="nav-item"><a href="FAQs.html" class="nav-link">FAQs</a></li>
+      <li class="nav-item"><a href="contact.html" class="nav-link">Contacts</a></li>
+      <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
+    </ul>
+</header>
+
+<body>
+    <h1 class="ch1">Graph Plotter</h1>
+    <h2 class="ch1">Drawing graphs made easy!</h2>
+       
+    <form id="dataForm">
+        <label for="xValues">Enter X values (comma-separated):</label>
+        <input type="text" id="xValues" name="xValues" placeholder="e.g. decimals, integers" required><br>
+
+        <label for="yValues">Enter Y values (comma-separated):</label>
+        <input type="text" id="yValues" name="yValues" placeholder="e.g. decimals, integers" required><br>
+
+        <label for="xLabel">X-Axis Label:</label>
+        <input type="text" id="xLabel" name="xLabel" placeholder="e.g. Days" required><br>
+
+        <label for="yLabel">Y-Axis Label:</label>
+        <input type="text" id="yLabel" name="yLabel" placeholder="e.g. People" required><br>
+
+        <label for="title">Graph Title:</label>
+        <input type="text" id="title" name="title" placeholder="e.g. Days vs People " required><br>
+
+        <button type="submit">Plot Graph</button>
+    </form>
+
+    <!-- Parent container with controlled size -->
+    <div id="chartContainer">
+        <canvas id="myChart"></canvas>
+    </div>
+
+    <!-- Button to download the graph -->
+    <button id="downloadBtn" style="display: none;">Download Graph</button>
+
+    <style>
+        #chartContainer {
+            width: 700px;
+            height: 500px;
+        }
+
+        #myChart {
+            width: 100% !important;
+            height: 100% !important;
+        }
+    </style>
+
+    <script>
+        let myChart;  // Variable to hold the chart instance
+
+        // Function to handle form submission
+        document.getElementById('dataForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Get user inputs
+            const xValues = document.getElementById('xValues').value.split(',').map(Number);
+            const yValues = document.getElementById('yValues').value.split(',').map(Number);
+            const xLabel = document.getElementById('xLabel').value;
+            const yLabel = document.getElementById('yLabel').value;
+            const title = document.getElementById('title').value;
+
+            // Check if input lengths match
+            if (xValues.length !== yValues.length) {
+                alert('X and Y values must have the same number of elements.');
+                return;
+            }
+
+            // Create or update the chart
+            const ctx = document.getElementById('myChart').getContext('2d');
+            if (myChart) {
+                myChart.destroy();  // Destroy previous chart if it exists
+            }
+            myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: xValues,
+                    datasets: [{
+                        label: 'User Data',
+                        data: yValues,
+                        borderColor: 'blue',
+                        fill: false,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: false,  // Disable responsive resizing
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: title,
+                            font: {
+                                size: 24, // Set font size for the title
+                                weight: 'bold',
+                                underline: true, // Apply underline effect
+                            },
+                            padding: {
+                                top: 10,
+                                bottom: 30
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: xLabel // Set X-axis label
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: yLabel // Set Y-axis label
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Show the download button
+            document.getElementById('downloadBtn').style.display = 'block';
+        });
+
+        // Function to handle the download button click
+        document.getElementById('downloadBtn').addEventListener('click', function() {
+            const link = document.createElement('a');
+            link.href = myChart.toBase64Image();
+            link.download = 'graph.png';
+            link.click();
+        });
+    </script>
+</body>
+
+<footer>&copy; Edwards 2024</footer>
+</html>
