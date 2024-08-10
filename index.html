@@ -25,10 +25,10 @@
        
     <form id="dataForm">
         <label for="xValues">Enter X values (comma-separated):</label>
-        <input type="text" id="xValues" name="xValues" placeholder="e.g. decimals, integers" required><br>
+        <input type="text" id="xValues" name="xValues" placeholder="Enter decimal or integer" required><br>
 
         <label for="yValues">Enter Y values (comma-separated):</label>
-        <input type="text" id="yValues" name="yValues" placeholder="e.g. decimals, integers" required><br>
+        <input type="text" id="yValues" name="yValues" placeholder="Enter decimal or integer" required><br>
 
         <label for="xLabel">X-Axis Label:</label>
         <input type="text" id="xLabel" name="xLabel" placeholder="e.g. Days" required><br>
@@ -61,90 +61,123 @@
             height: 100% !important;
         }
     </style>
-
-    <script>
-        let myChart;  // Variable to hold the chart instance
-
-        // Function to handle form submission
-        document.getElementById('dataForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-
-            // Get user inputs
-            const xValues = document.getElementById('xValues').value.split(',').map(Number);
-            const yValues = document.getElementById('yValues').value.split(',').map(Number);
-            const xLabel = document.getElementById('xLabel').value;
-            const yLabel = document.getElementById('yLabel').value;
-            const title = document.getElementById('title').value;
-
-            // Check if input lengths match
-            if (xValues.length !== yValues.length) {
-                alert('X and Y values must have the same number of elements.');
-                return;
+        <script>
+            let myChart;  // Variable to hold the chart instance
+        
+            // Function to determine logical step size
+            function calculateStepSize(min, max, steps = 5) {
+                const range = max - min;
+                return Math.ceil(range / steps);
             }
+        
+            // Function to handle form submission
+            document.getElementById('dataForm').addEventListener('submit', function(event) {
+    event.preventDefault();
 
-            // Create or update the chart
-            const ctx = document.getElementById('myChart').getContext('2d');
-            if (myChart) {
-                myChart.destroy();  // Destroy previous chart if it exists
-            }
-            myChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: xValues,
-                    datasets: [{
-                        label: 'User Data',
-                        data: yValues,
-                        borderColor: 'blue',
-                        fill: false,
-                        tension: 0.4
-                    }]
-                },
-                options: {
-                    responsive: false,  // Disable responsive resizing
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: title,
-                            font: {
-                                size: 24, // Set font size for the title
-                                weight: 'bold',
-                                underline: true, // Apply underline effect
-                            },
-                            padding: {
-                                top: 10,
-                                bottom: 30
-                            }
-                        }
+    // Get user inputs
+    const xValues = document.getElementById('xValues').value.split(',').map(Number);
+    const yValues = document.getElementById('yValues').value.split(',').map(Number);
+    const xLabel = document.getElementById('xLabel').value;
+    const yLabel = document.getElementById('yLabel').value;
+    const title = document.getElementById('title').value;
+
+    // Check if input lengths match
+    if (xValues.length !== yValues.length) {
+        alert('X and Y values must have the same number of elements.');
+        return;
+    }
+
+    // Determine axis limits
+    const xMin = Math.min(...xValues);
+    const xMax = Math.max(...xValues);
+    const yMin = Math.min(...yValues);
+    const yMax = Math.max(...yValues);
+
+    // Create or update the chart
+    const ctx = document.getElementById('myChart').getContext('2d');
+    if (myChart) {
+        myChart.destroy();  // Destroy previous chart if it exists
+    }
+    myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: xValues,  // Directly use xValues as labels
+            datasets: [{
+                label: 'Data Points',
+                data: yValues.map((value, index) => ({ x: xValues[index], y: value })),  // Map x and y values
+                borderColor: 'blue',
+                backgroundColor: 'blue', // Line color
+                fill: false,
+                tension: 0.3,  // Adjust this value for smoothness (0.8 for smoother curves)
+                pointBackgroundColor: 'red',  // Color for the data points
+                pointBorderColor: 'red',  // Border color for the data points
+                pointRadius: 4,  // Adjust the size of the points
+                pointHoverRadius: 6 // Adjust the size when hovered
+            }]
+        },
+        options: {
+            responsive: false,  // Disable responsive resizing
+            plugins: {
+                title: {
+                    display: true,
+                    text: title,
+                    font: {
+                        size: 24, // Set font size for the title
+                        weight: 'bold',
                     },
-                    scales: {
-                        x: {
-                            title: {
-                                display: true,
-                                text: xLabel // Set X-axis label
-                            }
-                        },
-                        y: {
-                            title: {
-                                display: true,
-                                text: yLabel // Set Y-axis label
-                            }
+                    padding: {
+                        top: 10,
+                        bottom: 30
+                    }
+                },
+                legend: {
+                    display: true,
+                    labels: {
+                        boxWidth: 20,
+                        color: 'black',
+                        padding: 20,
+                        font: {
+                            size: 14,
                         }
                     }
                 }
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: xLabel // Set X-axis label
+                    },
+                    min: xMin,
+                    max: xMax, // Set the max value of X axis
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: yLabel // Set Y-axis label
+                    },
+                    min: yMin,
+                    max: yMax,
+                }
+            }
+        }
+    });
+
+    // Show the download button
+    document.getElementById('downloadBtn').style.display = 'block';
+});
+
+        
+            // Function to handle the download button click
+            document.getElementById('downloadBtn').addEventListener('click', function() {
+                const link = document.createElement('a');
+                link.href = myChart.toBase64Image();
+                link.download = 'graph.png';
+                link.click();
             });
-
-            // Show the download button
-            document.getElementById('downloadBtn').style.display = 'block';
-        });
-
-        // Function to handle the download button click
-        document.getElementById('downloadBtn').addEventListener('click', function() {
-            const link = document.createElement('a');
-            link.href = myChart.toBase64Image();
-            link.download = 'graph.png';
-            link.click();
-        });
-    </script>
+        </script>
+        
+    
 </body>
 
 <footer>&copy; Edwards 2024</footer>
